@@ -4,26 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="593e4e07-2089-417e-bdb0-21bc4eec49c8" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/../../notes/微服务/01 微服务简介.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../notes/微服务/protoc-3.4.0-win32.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../notes/微服务/readme.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../notes/微服务/微服务.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/go_micro.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/client/client.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/myproto/myproto.pb.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/myproto/myproto.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/grpc/server/server.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/protobuf/main.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/protobuf/test/test.pb.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/protobuf/test/test.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rpc/client/client.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rpc/server/server.go" afterDir="false" />
+    <list default="true" id="593e4e07-2089-417e-bdb0-21bc4eec49c8" name="更改" comment="micro service: protobuf, rpc, grpc">
+      <change afterPath="$PROJECT_DIR$/consul/service/server.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul/service/server.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notes/微服务/微服务.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../notes/微服务/微服务.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,6 +53,14 @@
     </key>
   </component>
   <component name="RunManager" selected="Go 构建.go build go_micro/grpc/client">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="go_micro" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
     <configuration name="go build go_micro/grpc/client" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="go_micro" />
       <working_directory value="$PROJECT_DIR$" />
@@ -82,6 +77,15 @@
       <package value="go_micro/grpc/server" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/grpc/server/server.go" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="go_micro" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
       <method v="2" />
     </configuration>
     <recent_temporary>
@@ -105,6 +109,11 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="micro service: protobuf, rpc, grpc" />
+    <option name="LAST_COMMIT_MESSAGE" value="micro service: protobuf, rpc, grpc" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
