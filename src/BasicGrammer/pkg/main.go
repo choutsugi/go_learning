@@ -8,18 +8,17 @@ type People interface {
 
 type Student struct{}
 
-// func (stu Student) Speak(think string) (talk string) {	// 无法通过编译
 func (stu Student) Speak(think string) (talk string) {
-	if think == "sb" {
-		talk = "你是个大帅比"
+	if think == "LOL" {
+		talk = "hhh.."
 	} else {
-		talk = "您好"
+		talk = "Hasaki"
 	}
 	return
 }
 
 func main() {
 	var peo People = Student{}
-	think := "bitch"
+	think := "lol"
 	fmt.Println(peo.Speak(think))
 }
