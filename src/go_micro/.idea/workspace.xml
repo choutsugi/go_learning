@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="593e4e07-2089-417e-bdb0-21bc4eec49c8" name="更改" comment="micro service: protobuf, rpc, grpc">
-      <change afterPath="$PROJECT_DIR$/consul/service/server.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/consul/service/server.json" afterDir="false" />
+    <list default="true" id="593e4e07-2089-417e-bdb0-21bc4eec49c8" name="更改" comment="micro service: consul, micro.">
+      <change afterPath="$PROJECT_DIR$/micro/helloworld/client/client.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/micro/helloworld/handler/handler.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/micro/helloworld/proto/helloworld.proto" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/micro/helloworld/server/server.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../notes/微服务/微服务.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../notes/微服务/微服务.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
@@ -51,14 +53,25 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Workspace\go\go_learning\src\go_micro" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Workspace\go\go_learning\src\go_micro\micro\helloworld\server" />
+    </key>
   </component>
-  <component name="RunManager" selected="Go 构建.go build go_micro/grpc/client">
+  <component name="RunManager" selected="Go 构建.go build client.go">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="go_micro" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build client.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="go_micro" />
+      <working_directory value="$PROJECT_DIR$/micro/helloworld" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/micro/helloworld/client/client.go" />
       <method v="2" />
     </configuration>
     <configuration name="go build go_micro/grpc/client" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
@@ -70,13 +83,30 @@
       <filePath value="$PROJECT_DIR$/grpc/client/client.go" />
       <method v="2" />
     </configuration>
-    <configuration name="go build go_micro/grpc/server" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build hello" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="go_micro" />
-      <working_directory value="$PROJECT_DIR$" />
+      <working_directory value="$PROJECT_DIR$/micro/hello" />
       <kind value="PACKAGE" />
-      <package value="go_micro/grpc/server" />
+      <package value="hello" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/grpc/server/server.go" />
+      <filePath value="$PROJECT_DIR$/micro/hello/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build micro/helloworld" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="go_micro" />
+      <working_directory value="$PROJECT_DIR$/micro/helloworld" />
+      <kind value="PACKAGE" />
+      <package value="micro/helloworld" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/micro/helloworld/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build server.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="go_micro" />
+      <working_directory value="$PROJECT_DIR$/micro/helloworld" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/micro/helloworld/server/server.go" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
@@ -90,8 +120,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go 构建.go build client.go" />
+        <item itemvalue="Go 构建.go build server.go" />
+        <item itemvalue="Go 构建.go build micro/helloworld" />
+        <item itemvalue="Go 构建.go build hello" />
         <item itemvalue="Go 构建.go build go_micro/grpc/client" />
-        <item itemvalue="Go 构建.go build go_micro/grpc/server" />
       </list>
     </recent_temporary>
   </component>
@@ -113,7 +146,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="micro service: protobuf, rpc, grpc" />
-    <option name="LAST_COMMIT_MESSAGE" value="micro service: protobuf, rpc, grpc" />
+    <MESSAGE value="micro service: consul, micro." />
+    <option name="LAST_COMMIT_MESSAGE" value="micro service: consul, micro." />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
