@@ -10,6 +10,7 @@ import (
 
 func main() {
 	router := gin.Default()
+
 	// 处理multipart form提交文件时默认内存限制32Mib，通过以下方式修改：
 	router.MaxMultipartMemory = 8 << 20 // 8Mib
 	router.POST("/upload", func(context *gin.Context) {
@@ -35,7 +36,7 @@ func main() {
 		})
 	})
 
-	err := router.Run()
+	err := router.Run(":9000")
 	if err != nil {
 		return
 	}
