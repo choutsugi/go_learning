@@ -1,6 +1,9 @@
 package main
 
 import (
+	sql2 "database/sql"
+	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -12,15 +15,33 @@ type UserInfo struct {
 	Hobby      string
 }
 
-func main() {
+var db *gorm.DB
+var sqlDb *sql2.DB
+var err error
+
+func InitDb() {
 	dst := "root:root1234@tcp(192.168.99.100:13306)/db1?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dst), &gorm.Config{})
+	db, err = gorm.Open(mysql.Open(dst), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database!")
 	}
 
 	// 自动迁移：根据结构体生成表。
 	_ = db.AutoMigrate(&UserInfo{})
+
+	// 管理连接
+	sqlDb, err = db.DB()
+	if err != nil {
+		return
+	}
+
+	sqlDb.SetMaxIdleConns(10)
+	sqlDb.SetMaxOpenConns(100)
+	sqlDb.SetConnMaxLifetime(10 * time.Millisecond)
+
+}
+
+func main() {
 
 	// 增
 	db.Create(&UserInfo{
