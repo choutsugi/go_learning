@@ -1,10 +1,12 @@
-## Gin框架路由详解
+# Gin框架源码分析
+
+## 一、Gin框架路由详解
 
 参见：https://segmentfault.com/a/1190000016655709
 
 Gin框架使用定制版本的`httprouter`，其路由原理是大量使用公共前缀的树结构（即前缀树`Trie tree` 或只是基数树 `Radix Tree`），具有公共前缀的节点也共享一个公共父节点。
 
-### 01 Radix Tree
+### 1.1 Radix Tree
 
 前缀树参见：https://blog.csdn.net/u013949069/article/details/78056102
 
@@ -54,19 +56,19 @@ Priority   Path             Handle
 - 优先匹配被大多数路由路径包含的节点，使尽可能多的路由被快速定位。
 - 成本补偿：长路径定位花费时间长于短路径，优先匹配长路径可以达到成本补偿。
 
-### 02 Engine结构体
+### 1.2 Engine结构体
 
-#### UML结构图
+#### 1.2.1 UML结构图
 
  ![engine结构图](https://segmentfault.com/img/bVbh2X1?w=1374&h=774) 
 
-#### 总结
+#### 1.2.2 总结
 
 1. `Engine`结构体内嵌了`RouterGroup`结构体，在`RouterGroup`中定义了 `GET`，`POST` 等路由注册方法。 
 2. `Engine` 中的 `trees` 字段定义了路由逻辑。`trees` 是 `methodTrees` 类型（即 `[]methodTree`），`trees` 是一个数组，不同请求方法的路由在不同的树（`methodTree`）中。 
 3.  `methodTree` 中的 `root` 字段（`*node`类型）是路由树的根节点。树的构造与寻址都是在 `*node`的方法中完成的。 
 
-### 03 路由树节点
+### 1.3 路由树节点
 
 node路由树节点定义如下：
 
@@ -83,11 +85,11 @@ type node struct {
 }
 ```
 
-#### path和indices
+#### 1.3.1 path和indices
 
 使用前缀树的逻辑：例如，两个路由分别是 `/index`，`/inter`，则根节点为 `{path: "/in", indices: "dt"...}`，两个子节点为`{path: "dex", indices: ""}，{path: "ter", indices: ""}` 。
 
-#### handlers
+#### 1.3.2 handlers
 
 `handlers`里存储了该节点对应路由下的所有处理函数，处理业务逻辑时： 
 
@@ -102,7 +104,7 @@ func (c *Context) Next() {
 
 除最后一个函数外，其余函数都为中间件；如果某个节点的`handler`为空，则该节点对应的路由不存在，如上述中的`/in`路由的`handlers`为空。
 
-#### nType
+#### 1.3.3 nType
 
 Gin 中定义了四种节点类型： 
 
@@ -118,11 +120,11 @@ const (
 `param` 与 `catchAll` 使用的区别即为 `:` 与 `*` 的区别。`*` 会把路由后面的所有内容赋值给参数 `key`；但 `:` 可以多次使用。
 比如：`/user/:id/:no` 是合法的，但 `/user/*id/:no` 是非法的，因为 `*` 后面所有内容会赋值给参数 `id`。 
 
-#### wildType
+#### 1.3.4 wildType
 
 如果孩子节点是通配符（* 或 :），则该字段为true。
 
-### 04 路由树示例
+### 1.4 路由树示例
 
 路由定义如下：
 
@@ -140,7 +142,7 @@ r.GET("/game/:id/:k", func(context *gin.Context) {})
 
 >最新版本中，maxParams字段转移到了Engine结构体中。
 
-### 05 请求方法树
+### 1.5 请求方法树
 
 在gin的路由中，每一个`HTTP Method`(GET、POST、PUT、DELETE…)都对应了一棵 `radix tree`，注册路由的时候会调用下面的`addRoute`函数： 
 
@@ -214,11 +216,11 @@ func New() *Engine {
 }
 ```
 
-### 06 注册路由
+### 1.6 注册路由
 
 注册路由的逻辑主要有`addRoute`函数和`insertChild`方法。 
 
-#### addRoute方法
+#### 1.6.1 addRoute方法
 
 ```go
 // File: tree.go
@@ -348,7 +350,7 @@ walk:
 
 ![addroute](https://liwenzhou.com/images/Go/gin/addroute.gif) 
 
-#### insertChild方法
+#### 1.6.2 insertChild方法
 
 ```go
 // File: tree.go
@@ -459,7 +461,7 @@ func (n *node) insertChild(path string, fullPath string, handlers HandlersChain)
 
 `insertChild`函数是根据`path`本身进行分割，将`/`分开的部分分别作为节点保存，形成一棵树结构。参数匹配中的`:`和`*`的区别是，前者是匹配一个字段而后者是匹配后面所有的路径。 
 
-### 07 路由匹配
+### 1.7 路由匹配
 
 处理请求的入口函数`SeverHttp`：
 
@@ -665,3 +667,111 @@ walk: // Outer loop for walking the tree
 }
 ```
 
+## 二、Gin框架中间件详解
+
+gin框架涉及中间件相关有4个常用的方法，它们分别是`c.Next()`、`c.Abort()`、`c.Set()`、`c.Get()`。 
+
+### 2.1 中间件的注册
+
+从`r := gin.Default()`中的`Default`入手，其内部构造了一个新的`engine`后通过`Use()`函数注册了`Logger`中间件和`Recovery`中间件：
+
+```go
+func Default() *Engine {
+	debugPrintWARNINGDefault()
+	engine := New()
+	engine.Use(Logger(), Recovery())
+	return engine
+}
+```
+
+查看`Use()函数`：
+
+```go
+func (engine *Engine) Use(middleware ...HandlerFunc) IRoutes {
+	engine.RouterGroup.Use(middleware...)
+	engine.rebuild404Handlers()
+	engine.rebuild405Handlers()
+	return engine
+}
+```
+
+实际调用了`RouterGroup`的`Use()`函数：***注册中间件的本质是将中间件函数追加到`group.Handlers`中***
+
+```go
+func (group *RouterGroup) Use(middleware ...HandlerFunc) IRoutes {
+	group.Handlers = append(group.Handlers, middleware...)
+	return group.returnObj()
+}
+```
+
+注册路由时将对应路由的函数和之前的中间件函数结合到一起：
+
+```go
+func (group *RouterGroup) handle(httpMethod, relativePath string, handlers HandlersChain) IRoutes {
+	absolutePath := group.calculateAbsolutePath(relativePath)
+	handlers = group.combineHandlers(handlers)  // 将处理请求的函数与中间件函数结合
+	group.engine.addRoute(httpMethod, absolutePath, handlers)
+	return group.returnObj()
+}
+```
+
+结合过程：切片拼接（偏移拷贝）获得新的切片。
+
+```go
+func (group *RouterGroup) combineHandlers(handlers HandlersChain) HandlersChain {
+	finalSize := len(group.Handlers) + len(handlers)
+	if finalSize >= int(abortIndex) {
+		panic("too many handlers")
+	}
+	mergedHandlers := make(HandlersChain, finalSize)
+	copy(mergedHandlers, group.Handlers)
+	copy(mergedHandlers[len(group.Handlers):], handlers)
+	return mergedHandlers
+}
+```
+
+中间件函数与处理函数结合组成处理函数链条`HandlersChain`，本质是由`HandlerFunc`组成的切片：
+
+```go
+type HandlersChain []HandlerFunc
+```
+
+### 2.2 中间件的执行
+
+路由匹配中：
+
+```go
+value := root.getValue(rPath, c.Params, unescape)
+if value.handlers != nil {
+  c.handlers = value.handlers
+  c.Params = value.params
+  c.fullPath = value.fullPath
+  c.Next()  // 执行函数链条
+  c.writermem.WriteHeaderNow()
+  return
+}
+```
+
+其中的`c.Next`：
+
+```go
+func (c *Context) Next() {
+	c.index++
+	for c.index < int8(len(c.handlers)) {
+		c.handlers[c.index](c)
+		c.index++
+	}
+}
+```
+
+依据索引遍历执行`HandlersChain`中的每个函数（中间件或处理请求的函数），在中间件函数中再次调用`c.Next()`可实现嵌套调用，或者通过调用`c.Abort()`中断整个调用链，从当前函数返回。
+
+### 2.3 c.Set() / c.Get()
+
+`c.Set()`和`c.Get()`方法多用于在多个函数之间通过`c`传递数据的，比如在认证中间件中获取当前请求的相关信息（userID等）通过`c.Set()`存入`c`，然后在后续处理业务逻辑的函数中通过`c.Get()`来获取当前请求的用户。 
+
+## 三、总结
+
+1. gin框架路由使用前缀树，路由注册的过程是构造前缀树的过程，路由匹配的过程就是查找前缀树的过程。
+2. gin框架的中间件函数和处理函数是以切片形式的调用链条存在的，顺序调用也可以借助`c.Next()`方法实现嵌套调用。
+3. 借助`c.Set()`和`c.Get()`方法能够在不同的中间件函数中传递数据。
