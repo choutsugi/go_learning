@@ -1,0 +1,8 @@
+2021-10-23T17:28:36.591+0800	ERROR	zap_demo/main.go:57	Error fetching url...{url 15 0 https://www.github.com <nil>} {error 26 0  Get "https://www.github.com": read tcp 192.168.43.51:8635->20.205.243.166:443: wsarecv: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.}
+2021-10-23T17:28:36.845+0800	INFO	zap_demo/main.go:62	Success...{statusCode 15 0 200 OK <nil>} {url 15 0 https://www.baidu.com <nil>}
+2021-10-23T17:29:10.959+0800	ERROR	zap_demo/main.go:57	Error fetching url...{url 15 0 https://www.github.com <nil>} {error 26 0  Get "https://github.com/": dial tcp 20.205.243.166:443: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.}
+2021-10-23T17:29:11.190+0800	INFO	zap_demo/main.go:62	Success...{statusCode 15 0 200 OK <nil>} {url 15 0 https://www.baidu.com <nil>}
+2021-10-23T17:30:34.814+0800	DEBUG	zap_demo/main.go:49	Trying to hit GET request for https://www.github.com
+2021-10-23T17:30:55.898+0800	ERROR	zap_demo/main.go:52	Error fetching URL https://www.github.com : Error = Get "https://www.github.com": dial tcp 20.205.243.166:443: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
+2021-10-23T17:30:55.898+0800	DEBUG	zap_demo/main.go:49	Trying to hit GET request for https://www.baidu.com
+2021-10-23T17:30:56.172+0800	INFO	zap_demo/main.go:54	Success! statusCode = 200 OK for URL https://www.baidu.com
