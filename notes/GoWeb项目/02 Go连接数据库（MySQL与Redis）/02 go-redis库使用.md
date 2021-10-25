@@ -20,7 +20,7 @@ Redis支持诸如字符串（strings）、哈希（hashes）、列表（lists）
 Docker启动Redis server：
 
 ```bash
-$ docker run --name redis -p 6379:6379 -d redis
+$ docker run --name redis -p 16379:6379 -d redis
 ```
 
 Docker启动redis-cli连接redis server：

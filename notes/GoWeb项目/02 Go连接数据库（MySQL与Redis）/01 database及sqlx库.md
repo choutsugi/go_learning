@@ -28,6 +28,12 @@ $ docker images
 $ docker run --name mysql -p 13306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:latest
 ```
 
+> Win7首次连接必须在Docker启动一个MySQL客户端连接MySQL服务，后续才能使用Navicat连接。
+>
+> ```bash
+> docker run -it --network host --rm mysql mysql -h127.0.0.1 -P13306 --default-character-set=utf8mb4 -uroot -p
+> ```
+
 ### 1.2 连接
 
 Go语言中的`database/sql`包提供了保证SQL或类SQL数据库的泛用接口，并不提供具体的数据库驱动。
