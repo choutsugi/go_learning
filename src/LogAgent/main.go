@@ -4,52 +4,32 @@ package main
 // 收集指定目录下的日志文件，发送到kafka中。
 
 import (
+	"LogAgent/etcd"
 	"LogAgent/kafka"
 	"LogAgent/logger"
 	"LogAgent/tailfile"
-	"strings"
-	"time"
-
-	"github.com/Shopify/sarama"
+	"fmt"
 
 	"gopkg.in/ini.v1"
 )
 
 type Config struct {
-	KafkaConfig   `ini:"kafka"`
-	CollectConfig `ini:"collect"`
+	KafkaConfig `ini:"kafka"`
+	EtcdConfig  `ini:"etcd"`
 }
 
 type KafkaConfig struct {
 	Address  string `ini:"address"`
-	Topic    string `ini:"topic"`
 	ChanSize int64  `ini:"chan_size"`
 }
 
-type CollectConfig struct {
-	LogFilePath string `ini:"logfile_path"`
+type EtcdConfig struct {
+	Address    string `ini:"address"`
+	CollectKey string `ini:"collect_key"`
 }
 
-func run() (err error) {
-	for {
-		line, ok := <-tailfile.TailLines()
-		if !ok {
-			logger.Z.Warnf("tail file close reopen, filename:%s\n", tailfile.TailFilename())
-			time.Sleep(1 * time.Second)
-			continue
-		}
-		// 过滤空行
-		if len(strings.Trim(line.Text, "\r")) == 0 {
-			continue
-		}
-
-		// 使用channel实现异步发送
-		msg := &sarama.ProducerMessage{
-			Topic: "web_log",
-			Value: sarama.StringEncoder(line.Text),
-		}
-		kafka.Write(msg)
-	}
+func run() {
+	select {}
 }
 
 func main() {
@@ -59,7 +39,7 @@ func main() {
 	// 0. 读配置文件
 	err := ini.MapTo(configObj, "./config/config.ini")
 	if err != nil {
-		logger.Z.Error("load config failed, err:%v", err)
+		logger.Z.Errorf("load config failed, err:%v", err)
 		return
 	}
 	logger.Z.Info("read config success!")
@@ -67,23 +47,36 @@ func main() {
 	// 1. 初始化连接kafka
 	err = kafka.Init([]string{configObj.KafkaConfig.Address}, configObj.KafkaConfig.ChanSize)
 	if err != nil {
-		logger.Z.Error("init kafka failed, err:%v", err)
+		logger.Z.Errorf("init kafka failed, err:%v", err)
 		return
 	}
 	logger.Z.Debug("init kafka success!")
 
-	// 2. 根据配置中的日志路径使用tail收集
-	err = tailfile.Init(configObj.CollectConfig.LogFilePath)
+	// 2.初始化Etcd连接
+	err = etcd.Init([]string{configObj.EtcdConfig.Address})
 	if err != nil {
-		logger.Z.Error("init tailfile failed, err:%v", err)
+		logger.Z.Errorf("init etcd failed, err:%v", err)
+		return
+	}
+	logger.Z.Info("init etcd success!")
+
+	// 3.从etcd拉取配置
+	allConf, err := etcd.GetConf(configObj.EtcdConfig.CollectKey)
+	if err != nil {
+		logger.Z.Errorf("get conf failed, err:%v", err)
+		return
+	}
+	fmt.Println(allConf)
+
+	// 4.监视etcd
+	go etcd.WatchConf(configObj.EtcdConfig.CollectKey)
+
+	err = tailfile.Init(allConf)
+	if err != nil {
+		logger.Z.Errorf("init tailfile failed, err:%v", err)
 		return
 	}
 	logger.Z.Debug("init tailfile success!")
 
-	// 3. 日志发送到kafka
-	err = run()
-	if err != nil {
-		logger.Z.Error("run failed")
-		return
-	}
+	run()
 }

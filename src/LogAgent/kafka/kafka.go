@@ -11,6 +11,7 @@ var (
 	msgChan chan *sarama.ProducerMessage
 )
 
+// Write 向kafka写消息
 func Write(msg *sarama.ProducerMessage) {
 	msgChan <- msg
 }
@@ -25,7 +26,7 @@ func Init(address []string, chanSize int64) (err error) {
 	// 2.连接kafka
 	client, err = sarama.NewSyncProducer(address, config)
 	if err != nil {
-		logger.Z.Error("kafka: producer closed, err:%v", err)
+		logger.Z.Errorf("kafka: producer closed, err:%v", err)
 		return
 	}
 
@@ -44,7 +45,7 @@ func sendMsg() {
 		case msg := <-msgChan:
 			pid, offset, err := client.SendMessage(msg)
 			if err != nil {
-				logger.Z.Warning("send msg failed, err:", err)
+				logger.Z.Warningf("send msg failed, err:%v", err)
 				return
 			}
 			logger.Z.Infof("send msg to kafka success, pid:%v offset:%v", pid, offset)
