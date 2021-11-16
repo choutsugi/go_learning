@@ -48,7 +48,7 @@ func sendMsg() {
 				logger.Z.Warningf("send msg failed, err:%v", err)
 				return
 			}
-			logger.Z.Infof("send msg to kafka success, pid:%v offset:%v", pid, offset)
+			logger.Z.Infof("kafka: send msg to kafka success, pid:%v offset:%v", pid, offset)
 		}
 	}
 }

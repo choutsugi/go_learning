@@ -23,7 +23,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*1)
 	//str := `[{"path":"D:/ProgramData/LogAgent/logs/s4.log","topic":"s4_log"},{"path":"D:/ProgramData/LogAgent/logs/web.log","topic":"web_log"}]`
 	str := `[{"path":"D:/ProgramData/LogAgent/logs/s4.log","topic":"s4_log"},{"path":"D:/ProgramData/LogAgent/logs/web.log","topic":"web_log"},{"path":"D:/ProgramData/LogAgent/logs/s5.log","topic":"s5_log"}]`
-	_, err = client.Put(ctx, "collect_log_conf", str)
+	_, err = client.Put(ctx, "collect_log_192.168.1.53_conf", str)
 
 	//_, err = client.Put(ctx, "group", "LAB")
 	if err != nil {

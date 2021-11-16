@@ -3,6 +3,7 @@ package etcd
 import (
 	"LogAgent/common"
 	"LogAgent/logger"
+	"LogAgent/system"
 	"LogAgent/tailfile"
 	"context"
 	"encoding/json"
@@ -31,6 +32,12 @@ func Init(address []string) (err error) {
 
 // GetConf 获取配置项
 func GetConf(key string) (collectEntryList []common.CollectEntry, err error) {
+	// 获取IP生成Key
+	ip, err := system.GetLocalIPByDial()
+	if err != nil {
+		return
+	}
+	key = fmt.Sprintf(key, ip)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
 	defer cancel()
 	resp, err := client.Get(ctx, key)
@@ -38,6 +45,7 @@ func GetConf(key string) (collectEntryList []common.CollectEntry, err error) {
 		logger.Z.Errorf("etcd: get conf failed by key %s, err:%v", key, err)
 		return
 	}
+	logger.Z.Infof("etcd: get conf:%s success", key)
 
 	if len(resp.Kvs) == 0 {
 		logger.Z.Errorf("etcd: conf of key:%s is not exist", key)
@@ -61,7 +69,8 @@ func WatchConf(key string) {
 	var newConf []common.CollectEntry
 	for resp := range watchChan {
 		for _, event := range resp.Events {
-			logger.Z.Info("etcd: conf update.")
+			newConf = []common.CollectEntry{}
+			logger.Z.Info("etcd: configuration has been updated.")
 			fmt.Printf("type:%s, key:%s, value:%s", event.Type, event.Kv.Key, event.Kv.Value)
 			err := json.Unmarshal(event.Kv.Value, &newConf)
 			if err != nil {
