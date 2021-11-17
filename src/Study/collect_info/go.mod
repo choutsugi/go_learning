@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/influxdata/influxdb1-client v0.0.0-20200827194710-b269163b24ab
 	github.com/shirou/gopsutil v3.21.10+incompatible
+	github.com/sirupsen/logrus v1.8.1
 )
 
 require (
