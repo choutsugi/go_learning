@@ -1,5 +1,7 @@
 package system
 
+import "github.com/shirou/gopsutil/disk"
+
 const (
 	CpuInfoType  = "cpu"
 	MemInfoType  = "mem"
@@ -28,8 +30,11 @@ type MemInfo struct {
 	Cached      uint64  `json:"cached"`
 }
 
+type UsageStat = disk.UsageStat
+
 // DiskInfo 磁盘属性
 type DiskInfo struct {
+	PartitionUsageStat map[string]*UsageStat
 }
 
 // NetInfo 网络属性

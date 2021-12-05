@@ -1,17 +1,17 @@
 package system
 
 import (
-	"LogAgent/influx"
 	"fmt"
 
 	"github.com/shirou/gopsutil/mem"
 )
 
-func GetMemInfo() {
-	memInfo := new(MemInfo)
+func GetMemInfo() (memInfo *MemInfo) {
+	memInfo = new(MemInfo)
 	info, err := mem.VirtualMemory()
 	if err != nil {
 		fmt.Printf("system: get mem info failed, err:%v", err)
+		return
 	}
 
 	memInfo.Total = info.Total
@@ -21,8 +21,5 @@ func GetMemInfo() {
 	memInfo.Buffers = info.Buffers
 	memInfo.Cached = info.Cached
 
-	err = influx.InsertMemInfo(memInfo)
-	if err != nil {
-		fmt.Printf("system: get mem info failed, err:%v", err)
-	}
+	return memInfo
 }

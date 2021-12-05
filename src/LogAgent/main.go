@@ -4,11 +4,13 @@ package main
 // 收集指定目录下的日志文件，发送到kafka中。
 
 import (
+	"LogAgent/collect"
 	"LogAgent/etcd"
 	"LogAgent/kafka"
 	"LogAgent/logger"
 	"LogAgent/tailfile"
 	"fmt"
+	"time"
 
 	"gopkg.in/ini.v1"
 )
@@ -28,9 +30,9 @@ type EtcdConfig struct {
 	CollectKey string `ini:"collect_key"`
 }
 
-func run() {
-	select {}
-}
+//func run() {
+//	select {}
+//}
 
 func main() {
 	var configObj = new(Config)
@@ -78,5 +80,5 @@ func main() {
 	}
 	logger.Z.Debug("init tailfile success!")
 
-	run()
+	collect.Run(time.Second)
 }

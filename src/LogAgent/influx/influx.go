@@ -117,15 +117,29 @@ func InsertDiskInfo(info *system.DiskInfo) (err error) {
 		return err
 	}
 
-	tags := map[string]string{"disk": "disk"}
-	fields := map[string]interface{}{}
+	for k, v := range info.PartitionUsageStat {
+		tags := map[string]string{"path": k}
+		fields := map[string]interface{}{
+			"total":               v.Total,
+			"free":                v.Free,
+			"used":                v.Used,
+			"user_percent":        v.UsedPercent,
+			"inodes_total":        v.InodesTotal,
+			"inodes_used":         v.InodesUsed,
+			"inodes_free":         v.InodesFree,
+			"inodes_used_percent": v.InodesUsedPercent,
+		}
+		point, err := client.NewPoint("disk", tags, fields, time.Now())
+		if err != nil {
+			fmt.Printf("insert failed:, err:%v", err)
+		}
+		points.AddPoint(point)
+	}
 
-	point, err := client.NewPoint("disk", tags, fields, time.Now())
 	if err != nil {
 		fmt.Printf("insert failed:, err:%v", err)
 		return err
 	}
-	points.AddPoint(point)
 	err = cli.Write(points)
 	if err != nil {
 		fmt.Printf("insert failed:, err:%v", err)
